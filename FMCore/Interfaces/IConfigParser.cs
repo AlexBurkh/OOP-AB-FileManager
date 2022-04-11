@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FMRun
+namespace FMCore.Interfaces
 {
-    internal class Program
+    internal interface IConfigParser
     {
-        public static void Main(string[] args)
-        {
-
-        }
+        
     }
 }

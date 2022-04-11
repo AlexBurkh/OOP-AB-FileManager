@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FMRun
+namespace FMCore.Models
 {
-    internal class Program
+    internal class Config
     {
-        public static void Main(string[] args)
-        {
-
-        }
     }
 }
