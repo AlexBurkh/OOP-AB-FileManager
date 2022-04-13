@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FMCore.Engine.Loggers;
 
 namespace FMCore.Models
 {
-    internal class Config
+    public class Config
     {
+        public string LastDir { get; set; }
+        public LoggerType LoggerType { get; set; }
+        public string LogFile { get; set; }
     }
 }

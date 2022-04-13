@@ -11,12 +11,13 @@ namespace Test
 {
     public class UnitTests
     {
-        ILogger logger = new ConsoleLogger();
+        //ILogger logger = new ConsoleLogger();
+        ILogger logger = new FileLogger($"{Directory.GetCurrentDirectory()}\\logfile.txt");
         [Fact]
         public void TestFileTreeProvider()
         {
             ITreeProvider<Dictionary<long, FileSystemInfo>> treeProvider = new DictProvider(logger);
-            var tree = treeProvider.MakeTree(@"D:\0");
+            var tree = treeProvider.MakeTree(@"D:\1");
             var tree1 = treeProvider.MakeTree(null);
             var tree2 = treeProvider.MakeTree(" ");
             var tree3 = treeProvider.MakeTree("F:\\");

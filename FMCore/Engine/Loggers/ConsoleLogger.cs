@@ -9,6 +9,7 @@ namespace FMCore.Engine.Loggers
 {
     public class ConsoleLogger : ILogger
     {
+        public LoggerType Type { get; } = LoggerType.console;
         public void Log(string message)
         {
             Console.WriteLine($"[{DateTime.Now}] {message}");

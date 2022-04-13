@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FMCore.Interfaces
+namespace FMCore.Engine.Loggers
 {
-    internal interface IConfigParser
+    public enum LoggerType
     {
-        
+        console,
+        file
     }
 }
