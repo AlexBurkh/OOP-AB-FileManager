@@ -1,6 +1,6 @@
 using FMCore.Interfaces;
 using FMCore.Engine.Loggers;
-using FMCore.Engine.TreeProviders;
+using FMCore.Engine.FileSystem;
 
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +16,7 @@ namespace Test
         [Fact]
         public void TestFileTreeProvider()
         {
-            ITreeProvider<Dictionary<long, FileSystemInfo>> treeProvider = new DictProvider(logger);
+            var FSM = new FileSystemManager(logger);
             var tree = treeProvider.MakeTree(@"D:\1");
             var tree1 = treeProvider.MakeTree(null);
             var tree2 = treeProvider.MakeTree(" ");
