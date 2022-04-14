@@ -9,6 +9,6 @@ namespace FMCore.Models
 {
     public class Page
     {
-        ITreeProvider<Dictionary<long, FileSystemInfo>> treeProvider;
+        
     }
 }
