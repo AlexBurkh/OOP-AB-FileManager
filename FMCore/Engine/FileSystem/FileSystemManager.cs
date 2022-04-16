@@ -17,6 +17,7 @@ namespace FMCore.Engine.FileSystem
         #endregion
 
         #region Поля
+        private static long _nextId = 0;
         private ILogger logger;
         #endregion
 
@@ -34,29 +35,29 @@ namespace FMCore.Engine.FileSystem
         /// </summary>
         /// <param name="rootPath">Путь к директории</param>
         /// <returns>Список элементов ФС</returns>
-        public List<FileSystemInfo> ListDirectory(string rootPath)
+        public Dictionary<long,FileSystemInfo> ListDirectory(string rootPath)
         {
             if (CheckDirectoryPath(rootPath))
             {
                 try
                 {
                     DirectoryInfo root = new DirectoryInfo(rootPath);
-                    var tree = new List<FileSystemInfo>();
+                    var tree = new Dictionary<long, FileSystemInfo>();
 
-                    tree.Add(root);
+                    tree.Add(GenerateId() ,root);
 
                     DirectoryInfo[] dirs = root.GetDirectories();
                     for (int i = 0; i < dirs.Length; i++)
                     {
                         var dir = dirs[i];
-                        tree.Add(dir);
+                        tree.Add(GenerateId(), root);
                     }
 
                     FileInfo[] files = root.GetFiles();
                     for (int i = 0; i < files.Length; i++)
                     {
                         var file = files[i];
-                        tree.Add(file);
+                        tree.Add(GenerateId(), root);
                     }
 
                     return tree;
@@ -94,14 +95,85 @@ namespace FMCore.Engine.FileSystem
             {
                 CopyDir(new DirectoryInfo(sourcePath));
                 PasteDir(new DirectoryInfo(destPath));
-                try
-                {
-                    Directory.Delete(sourcePath, true);
-                }
-                catch (Exception ex)
-                {
-                    logger.Log(ex.Message);
-                }
+                DeleteDirectory(sourcePath);
+            }
+        }
+
+        /// <summary>
+        /// Удаление директории
+        /// </summary>
+        /// <param name="sourcePath">Путь к директории для удаления</param>
+        /// <returns>true - в случае успеха и false - в случае ошибки</returns>
+        public bool DeleteDirectory(string sourcePath)
+        {
+            try
+            {
+                Directory.Delete(sourcePath, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Копирование файла
+        /// </summary>
+        /// <param name="src">Файл источник</param>
+        /// <param name="dst">файл назначения</param>
+        /// <returns>true - успех, false - неудача</returns>
+        public bool CopyFile(string src, string dst)
+        {
+            try
+            {
+                File.Copy(src, dst, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Перемещение файла
+        /// </summary>
+        /// <param name="src">Файл источник</param>
+        /// <param name="dst">файл назначения</param>
+        /// <returns>true - успех, false - неудача</returns>
+        public bool MoveFile(string src, string dst)
+        {
+            try
+            {
+                File.Move(src, dst, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Удаление файла
+        /// </summary>
+        /// <param name="fileToRemvoe">Файл, который необходимо удалить</param>
+        /// <returns>true - успех, false - неудача</returns>
+        public bool DeleteFile(string fileToRemvoe)
+        {
+            try
+            {
+                File.Delete(fileToRemvoe);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Log(ex.Message);
+                return false;
             }
         }
         #endregion
@@ -139,11 +211,18 @@ namespace FMCore.Engine.FileSystem
             {
                 var item = ContentBuffer.Dequeue();
                 var newFullName = MakeNewPath(item, dst);
-                if (IsDirectory(item))
+                try
                 {
-                    Directory.CreateDirectory(newFullName);
+                    if (IsDirectory(item))
+                    {
+                        Directory.CreateDirectory(newFullName);
+                    }
+                    File.Move(item.FullName, newFullName);
                 }
-                File.Create(newFullName);
+                catch (Exception ex)
+                {
+                    logger.Log(ex.Message);
+                }
             }
         }
 
@@ -175,6 +254,15 @@ namespace FMCore.Engine.FileSystem
             }
             logger.Log($"Ошибка аргумента: путь {fileSystemPath} к корню дерева некорректен");
             return false;
+        }
+
+        /// <summary>
+        /// Сгенерировать ID для списка файлов директории
+        /// </summary>
+        /// <returns>ID</returns>
+        private static long GenerateId()
+        {
+            return _nextId++;
         }
 
         /// <summary>
