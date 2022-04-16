@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FMCore.Models
+namespace FMCore.Models.Borders
 {
     internal sealed class PropertiesBorder : Border
     {

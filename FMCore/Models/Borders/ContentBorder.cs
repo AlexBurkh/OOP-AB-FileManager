@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FMCore.Models
+namespace FMCore.Models.Borders
 {
-    internal sealed class MenuBorder : Border
+    internal sealed class ContentBorder : Border
     {
         #region Конструкторы
-        internal MenuBorder(ILogger logger, uint height, uint width)
+        internal ContentBorder(ILogger logger, uint height, uint width)
             : base(logger, height, width)
         {
 

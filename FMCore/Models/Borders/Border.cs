@@ -1,6 +1,6 @@
 ﻿using FMCore.Interfaces;
 
-namespace FMCore.Models
+namespace FMCore.Models.Borders
 {
     public abstract class Border
     {
@@ -8,8 +8,8 @@ namespace FMCore.Models
         public Border(ILogger logger, uint height, uint width)
         {
             this.logger = logger;
-            this.Height = height;
-            this.Width = width;
+            Height = height;
+            Width = width;
         }
         #endregion
 
