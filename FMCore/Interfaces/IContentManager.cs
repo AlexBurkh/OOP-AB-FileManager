@@ -8,6 +8,6 @@ namespace FMCore.Interfaces
 {
     public interface IContentManager<TResult, KParam>
     {
-        public TResult LoadContent(KParam);
+        public TResult LoadContent(KParam param);
     }
 }

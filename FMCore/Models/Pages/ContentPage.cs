@@ -1,4 +1,5 @@
-﻿using FMCore.Engine.FileSystem;
+﻿using FMCore.Engine.ConsoleDrawing;
+using FMCore.Engine.FileSystem;
 using FMCore.Interfaces;
 using FMCore.Models.Borders;
 
@@ -14,21 +15,32 @@ namespace FMCore.Models.Pages
     public class ContentPage : Page
     {
         #region Конструкторы
-        public ContentPage(ILogger logger, FileSystemManager contentManager, uint height, uint width)
+        public ContentPage(IContentManager<Dictionary<long, FileSystemInfo>, string> contentManager,
+
+                           ILogger logger, 
+                           uint height, 
+                           uint width)
             : base(logger, height, width)
         {
             _contentManager = contentManager;
+            _borders = new Border[]
+            {
+                new MenuBorder(logger, height, width),
+                new ContentBorder(logger, height, width),
+                new PropertiesBorder(logger, height, width)
+            };
         }
         #endregion
 
 
         #region Поля
-        FileSystemManager _contentManager;
+        ConsoleDrawer drawer = new ConsoleDrawer();
+        IContentManager<Dictionary<long, FileSystemInfo>, string> _contentManager;
+        Border[] _borders;
         #endregion
 
 
         #region Свойства
-        Border[] Borders { get; set; }
         Dictionary<long, FileSystemInfo> Content { get; set; }
         #endregion
 
@@ -48,29 +60,42 @@ namespace FMCore.Models.Pages
         /// Загрузить контент
         /// </summary>
         /// <param name="content"></param>
-        public void UploadContent(Dictionary<long, FileSystemInfo> content)
+        public void LoadContent(string dir)
         {
-            if (content is null) { return; }
-            Content = content;
+            if (dir is not null)
+            {
+                Content = _contentManager.LoadContent(dir);
+            }
         }
 
         private void PrintBorders()
         {
-            for (int i = 0; i < Borders.Length; i++)
+            for (int i = 0; i < _borders.Length; i++)
             {
-                var border = Borders[i];
+                var border = _borders[i];
                 border.Draw();
             }
         }
         private void PrintContent()
         {
-            for (int i = 0; i < Content.Count; i++)
+            for (int i = 0; i < PagedContent.Count; i++)
             {
-                if (Content.TryGetValue(i, out var content))
+                if (PagedContent.TryGetValue(i, out var content))
                 {
-                    /// printing "ContentString"
+                    if (content is DirectoryInfo)
+                    {
+                        drawer.DrawColoredAt(content.FullName, (2, 2), (ConsoleColor.Black, ConsoleColor.DarkYellow));
+                    }
+                    if (content is FileInfo)
+                    {
+                        drawer.DrawColoredAt(content.Name, (2, 2), (ConsoleColor.Black, ConsoleColor.Gray));
+                    }
                 }
             }
+        }
+        private void ChooseContentByIndex(long startIndex)
+        {
+
         }
         #endregion
     }

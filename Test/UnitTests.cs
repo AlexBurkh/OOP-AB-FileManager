@@ -17,10 +17,10 @@ namespace Test
         public void TestFileTreeProvider()
         {
             var FSM = new FileSystemManager(logger);
-            var tree = FSM.ListDirectory(@"D:\1");
-            var tree1 = FSM.ListDirectory(null);
-            var tree2 = FSM.ListDirectory(" ");
-            var tree3 = FSM.ListDirectory("F:\\");
+            var tree = FSM.LoadContent(@"D:\1");
+            var tree1 = FSM.LoadContent(null);
+            var tree2 = FSM.LoadContent(" ");
+            var tree3 = FSM.LoadContent("F:\\");
         }
         [Fact]
         public void TestConfigParser()
