@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 
-namespace FMCore.Engine.FileSystem
+namespace FMCore.Engine
 {
-    public class FileSystemManager : IContentManager<Dictionary<long, FileSystemInfo>, string>
+    public class FileSystemDriver
     {
         #region Конструкторы
-        public FileSystemManager(ILogger logger)
+        public FileSystemDriver(ILogger logger)
         {
             this.logger = logger ?? new ConsoleLogger();
         }
@@ -35,7 +35,7 @@ namespace FMCore.Engine.FileSystem
         /// </summary>
         /// <param name="rootPath">Путь к директории</param>
         /// <returns>Список элементов ФС</returns>
-        public Dictionary<long,FileSystemInfo> LoadContent(string rootPath)
+        public Dictionary<long, FileSystemInfo> ListDirectory(string rootPath)
         {
             if (CheckPath(rootPath))
             {
@@ -44,7 +44,7 @@ namespace FMCore.Engine.FileSystem
                     DirectoryInfo root = new DirectoryInfo(rootPath);
                     var tree = new Dictionary<long, FileSystemInfo>();
 
-                    tree.Add(GenerateId() ,root);
+                    tree.Add(GenerateId(), root);
 
                     DirectoryInfo[] dirs = root.GetDirectories();
                     for (int i = 0; i < dirs.Length; i++)
@@ -69,7 +69,7 @@ namespace FMCore.Engine.FileSystem
             }
             return null;
         }
-        
+
 
 
         /// <summary>

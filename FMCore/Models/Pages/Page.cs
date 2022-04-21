@@ -2,7 +2,7 @@
 
 namespace FMCore.Models.Pages
 {
-    public abstract class Page
+    public abstract class Page<KParam>
     {
         #region Конструкторы
         public Page(ILogger logger, uint height, uint width)
@@ -26,7 +26,7 @@ namespace FMCore.Models.Pages
 
 
         #region Методы
-        public abstract void Print();
+        public abstract void Print(KParam param);
         #endregion
     }
 }

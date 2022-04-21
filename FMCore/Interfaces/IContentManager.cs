@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace FMCore.Interfaces
 {
-    public interface IContentManager<TResult, KParam>
+    public interface IContentManager<KParam>
     {
-        public TResult LoadContent(KParam param);
+        public void MakeContent(KParam param);
     }
 }

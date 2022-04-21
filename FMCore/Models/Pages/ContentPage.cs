@@ -1,5 +1,4 @@
 ﻿using FMCore.Engine.ConsoleDrawing;
-using FMCore.Engine.FileSystem;
 using FMCore.Interfaces;
 using FMCore.Models.Borders;
 
@@ -10,19 +9,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace FMCore.Models.Pages
 {
-    public class ContentPage : Page
+    public class ContentPage<T> : Page<T>
+        where T : ICollection<KeyValuePair<long, FileSystemInfo>>
     {
         #region Конструкторы
-        public ContentPage(IContentManager<Dictionary<long, FileSystemInfo>, string> contentManager,
-
-                           ILogger logger, 
+        public ContentPage(ILogger logger, 
                            uint height, 
                            uint width)
             : base(logger, height, width)
         {
-            _contentManager = contentManager;
             _borders = new Border[]
             {
                 new MenuBorder(logger, height, width),
@@ -35,7 +33,6 @@ namespace FMCore.Models.Pages
 
         #region Поля
         ConsoleDrawer drawer = new ConsoleDrawer();
-        IContentManager<Dictionary<long, FileSystemInfo>, string> _contentManager;
         Border[] _borders;
         #endregion
 
@@ -50,22 +47,10 @@ namespace FMCore.Models.Pages
         /// <summary>
         /// Вывод страницы с контентом
         /// </summary>
-        public override void Print()
+        public override void Print(T content)
         {
             PrintBorders();
-            PrintContent();
-        }
-
-        /// <summary>
-        /// Загрузить контент
-        /// </summary>
-        /// <param name="content"></param>
-        public void LoadContent(string dir)
-        {
-            if (dir is not null)
-            {
-                Content = _contentManager.LoadContent(dir);
-            }
+            PrintContent(content);
         }
 
         private void PrintBorders()
@@ -76,26 +61,22 @@ namespace FMCore.Models.Pages
                 border.Draw();
             }
         }
-        private void PrintContent()
+        private void PrintContent(T content)
         {
-            for (int i = 0; i < PagedContent.Count; i++)
+            for (int i = 0; i < content.Count; i++)
             {
-                if (PagedContent.TryGetValue(i, out var content))
+                if (Content.TryGetValue(i, out var contentItem))
                 {
-                    if (content is DirectoryInfo)
+                    if (contentItem is DirectoryInfo)
                     {
-                        drawer.DrawColoredAt(content.FullName, (2, 2), (ConsoleColor.Black, ConsoleColor.DarkYellow));
+                        drawer.DrawColoredAt(contentItem.FullName, (2, 2), (ConsoleColor.Black, ConsoleColor.DarkYellow));
                     }
-                    if (content is FileInfo)
+                    if (contentItem is FileInfo)
                     {
-                        drawer.DrawColoredAt(content.Name, (2, 2), (ConsoleColor.Black, ConsoleColor.Gray));
+                        drawer.DrawColoredAt(contentItem.Name, (2, 2), (ConsoleColor.Black, ConsoleColor.Gray));
                     }
                 }
             }
-        }
-        private void ChooseContentByIndex(long startIndex)
-        {
-
         }
         #endregion
     }
