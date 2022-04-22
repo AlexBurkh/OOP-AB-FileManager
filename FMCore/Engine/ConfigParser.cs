@@ -8,12 +8,6 @@ namespace FMCore.Engine
 {
     public class ConfigParser
     {
-        public ConfigParser(ILogger logger)
-        {
-            this.logger = logger;
-        }
-
-        ILogger logger;
         private readonly string _configFile = "D:\\appConfig.json";
 
         public Config Parse()
@@ -21,11 +15,11 @@ namespace FMCore.Engine
             try
             {
                 string json = File.ReadAllText(_configFile);
-                JsonSerializer.Deserialize<Config>(json);
+                return JsonSerializer.Deserialize<Config>(json);
             }
             catch (Exception ex)
             {
-                logger.Log(ex.Message);
+                Console.WriteLine(ex.Message);
             }
             return null;
 

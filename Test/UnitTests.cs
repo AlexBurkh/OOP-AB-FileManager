@@ -1,17 +1,16 @@
 using FMCore.Interfaces;
 using FMCore.Engine.Loggers;
-using FMCore.Engine.FileSystem;
-
-using System.Collections.Generic;
-using System.IO;
 using Xunit;
 using FMCore.Engine;
+using FMCore.Engine.ContentManagers;
+using FMCore.Models;
 
 namespace Test
 {
     public class UnitTests
     {
         ILogger logger = new ConsoleLogger();
+        Config config;
         //ILogger logger = new FileLogger($"{Directory.GetCurrentDirectory()}\\logfile.txt");
         [Fact]
         public void TestFileTreeProvider()
@@ -26,7 +25,13 @@ namespace Test
         public void TestConfigParser()
         {
             ConfigParser parser = new ConfigParser(logger);
-            var config = parser.Parse();
+            config = parser.Parse();
+        }
+        [Fact]
+        public void TestPageManagerPrintPage()
+        {
+            var pm = new PageManager(logger, new FileSystemDriver(logger), config);
+            pm.PrintPage("D:\\1", 0);
         }
     }
 }

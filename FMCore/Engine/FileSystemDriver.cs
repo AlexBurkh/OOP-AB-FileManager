@@ -17,7 +17,6 @@ namespace FMCore.Engine
         #endregion
 
         #region Поля
-        private static long _nextId = 0;
         private ILogger logger;
         #endregion
 
@@ -35,29 +34,29 @@ namespace FMCore.Engine
         /// </summary>
         /// <param name="rootPath">Путь к директории</param>
         /// <returns>Список элементов ФС</returns>
-        public Dictionary<long, FileSystemInfo> ListDirectory(string rootPath)
+        public List<FileSystemInfo> ListDirectory(string rootPath)
         {
             if (CheckPath(rootPath))
             {
                 try
                 {
                     DirectoryInfo root = new DirectoryInfo(rootPath);
-                    var tree = new Dictionary<long, FileSystemInfo>();
+                    var tree = new List<FileSystemInfo>();
 
-                    tree.Add(GenerateId(), root);
+                    tree.Add(root);
 
                     DirectoryInfo[] dirs = root.GetDirectories();
                     for (int i = 0; i < dirs.Length; i++)
                     {
                         var dir = dirs[i];
-                        tree.Add(GenerateId(), root);
+                        tree.Add(dir);
                     }
 
                     FileInfo[] files = root.GetFiles();
                     for (int i = 0; i < files.Length; i++)
                     {
                         var file = files[i];
-                        tree.Add(GenerateId(), root);
+                        tree.Add(file);
                     }
 
                     return tree;
@@ -139,15 +138,6 @@ namespace FMCore.Engine
         #endregion
 
         #region Вспомогательные
-        /// <summary>
-        /// Сгенерировать ID для списка файлов директории
-        /// </summary>
-        /// <returns>ID</returns>
-        private static long GenerateId()
-        {
-            return _nextId++;
-        }
-
         /// <summary>
         /// Проверяет директорию по указанному пути
         /// </summary>

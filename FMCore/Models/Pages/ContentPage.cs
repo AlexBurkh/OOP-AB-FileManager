@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace FMCore.Models.Pages
 {
     public class ContentPage<T> : Page<T>
-        where T : ICollection<KeyValuePair<long, FileSystemInfo>>
+        where T : ICollection<FileSystemInfo>
     {
         #region Конструкторы
         public ContentPage(ILogger logger, 
@@ -47,7 +47,7 @@ namespace FMCore.Models.Pages
         /// <summary>
         /// Вывод страницы с контентом
         /// </summary>
-        public override void Print(T content)
+        public override void Print(T content, int coloredItemIndex)
         {
             PrintBorders();
             PrintContent(content);

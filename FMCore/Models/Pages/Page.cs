@@ -26,7 +26,7 @@ namespace FMCore.Models.Pages
 
 
         #region Методы
-        public abstract void Print(KParam param);
+        public abstract void Print(KParam param, int coloredItemIndex);
         #endregion
     }
 }

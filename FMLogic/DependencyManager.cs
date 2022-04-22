@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FMCore.Interfaces
+namespace FMLogic
 {
-    public interface IContentManager<KParam>
+    internal class DependencyManager
     {
-        public void MakeContent(KParam param);
     }
 }

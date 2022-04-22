@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FMCore\FMCore.csproj" />
-    <ProjectReference Include="..\FMLogic\FMLogic.csproj" />
   </ItemGroup>
 
 </Project>
