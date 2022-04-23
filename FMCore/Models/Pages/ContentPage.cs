@@ -16,23 +16,25 @@ namespace FMCore.Models.Pages
         where T : ICollection<FileSystemInfo>
     {
         #region Конструкторы
-        public ContentPage(ILogger logger, 
+        public ContentPage(ILogger logger,
+                           ConsoleDrawer drawer,
                            uint height, 
                            uint width)
             : base(logger, height, width)
         {
+            this.drawer = drawer;
             _borders = new Border[]
             {
-                new MenuBorder(logger, height, width),
-                new ContentBorder(logger, height, width),
-                new PropertiesBorder(logger, height, width)
+                new MenuBorder(logger, drawer, 3, Width),
+                new ContentBorder(logger, drawer, Height, Width),
+                new PropertiesBorder(logger, drawer, 10, Width)
             };
         }
         #endregion
 
 
         #region Поля
-        ConsoleDrawer drawer = new ConsoleDrawer();
+        ConsoleDrawer drawer;
         Border[] _borders;
         #endregion
 
@@ -50,7 +52,7 @@ namespace FMCore.Models.Pages
         public override void Print(T content, int coloredItemIndex)
         {
             PrintBorders();
-            PrintContent(content);
+            //PrintContent(content);
         }
 
         private void PrintBorders()

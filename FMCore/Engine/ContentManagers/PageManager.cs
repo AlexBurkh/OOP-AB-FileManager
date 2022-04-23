@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using FMCore.Models.Pages;
 using FMCore.Models;
+using FMCore.Engine.ConsoleDrawing;
 
 namespace FMCore.Engine.ContentManagers
 {
@@ -10,20 +11,22 @@ namespace FMCore.Engine.ContentManagers
     {
         public PageManager(ILogger logger, FileSystemDriver driver, Config config)
         {
+            CONTENT_LENGTH = appConfig?.ContentLinesOnPage ?? 30;
             this.logger = logger;
             this.driver = driver;
             this.appConfig = config;
-            driver = new FileSystemDriver(logger);
-            CONTENT_LENGTH = appConfig?.ContentLinesOnPage ?? 30;
-            page = new ContentPage<List<FileSystemInfo>>(logger, (uint) appConfig.WindowHeight, (uint) appConfig.WindowWidth);
+            this.driver = driver;
+            drawer = new ConsoleDrawer();
+            page = new ContentPage<List<FileSystemInfo>>(logger, drawer, (uint) appConfig.WindowHeight, (uint) appConfig.WindowWidth);
         }
 
         ILogger logger;
         FileSystemDriver driver;
+        ConsoleDrawer drawer;
         Config appConfig;
         Page<List<FileSystemInfo>> page;
 
-        static ushort CONTENT_LENGTH;
+        public static uint CONTENT_LENGTH;
         int startContentIndex = 0;
         int endContentIndex = (int) CONTENT_LENGTH - 1;
 
@@ -50,7 +53,7 @@ namespace FMCore.Engine.ContentManagers
             {
                 if (Content.Count > CONTENT_LENGTH)
                 {
-                    CuttedContent = Content.GetRange(0, CONTENT_LENGTH);
+                    CuttedContent = Content.GetRange(0, (int) CONTENT_LENGTH);
                 }
                 if (Content.Count <= CONTENT_LENGTH)
                 {
@@ -101,7 +104,7 @@ namespace FMCore.Engine.ContentManagers
 
             if (Content.Count > CONTENT_LENGTH)
             {
-                CuttedContent = Content.GetRange(startContentIndex, CONTENT_LENGTH);
+                CuttedContent = Content.GetRange(startContentIndex, (int) CONTENT_LENGTH);
             }
             if (Content.Count <= CONTENT_LENGTH)
             {

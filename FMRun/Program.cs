@@ -34,7 +34,9 @@ namespace FMRun
             {
                 logger = new FileLogger(appConfig.LogFile);
             }
-
+            Console.SetWindowSize(appConfig.WindowWidth, appConfig.WindowHeight);
+            Console.SetBufferSize(appConfig.WindowWidth, appConfig.WindowHeight);
+            
             currentCatalog = appConfig.LastDir;
 
             FileSystemDriver driver = new FileSystemDriver(logger);
