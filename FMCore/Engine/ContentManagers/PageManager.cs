@@ -4,6 +4,7 @@ using System.IO;
 using FMCore.Models.Pages;
 using FMCore.Models;
 using FMCore.Engine.ConsoleDrawing;
+using System;
 
 namespace FMCore.Engine.ContentManagers
 {
@@ -16,7 +17,7 @@ namespace FMCore.Engine.ContentManagers
             this.driver = driver;
             this.appConfig = config;
             this.driver = driver;
-            drawer = new ConsoleDrawer();
+            drawer = new ConsoleDrawer(appConfig.WindowWidth);
             page = new ContentPage<List<FileSystemInfo>>(logger, drawer, (uint) appConfig.WindowHeight, (uint) appConfig.WindowWidth);
         }
 
@@ -34,7 +35,7 @@ namespace FMCore.Engine.ContentManagers
         public int CurrSelectedIndex = 0;
         public int PrevSelectedIndex = 0;
         public string WorkDir { get; private set; }
-        public string PrevWorkDir { get; private set; }
+        public string PrevWorkDir { get; private set; } = string.Empty;
         public int MaxIndex { get; private set; }
         public FileSystemInfo SelectedItem { get; private set; }
         List<FileSystemInfo> Content { get; set; }
@@ -43,13 +44,16 @@ namespace FMCore.Engine.ContentManagers
 
         public void PrintPage(string workDir, int itemIndex)
         {
-            if (workDir != PrevWorkDir || Content is null)
+            Console.Clear();
+            WorkDir = workDir;
+            if (WorkDir != PrevWorkDir || Content is null)
             {
-                Content = driver.ListDirectory(workDir);
+                Content = driver.ListDirectory(WorkDir);
                 MaxIndex = Content.Count - 1;
+                CurrSelectedIndex = itemIndex;
             }
 
-            if (CuttedContent is null)
+            if (CuttedContent is null || (CuttedContent[0] != Content[0]))
             {
                 if (Content.Count > CONTENT_LENGTH)
                 {
@@ -75,7 +79,7 @@ namespace FMCore.Engine.ContentManagers
                 {
                     CurrSelectedIndex += 1;
                 }
-                else
+                if (itemIndex < CurrSelectedIndex)
                 {
                     if (CurrSelectedIndex > 0)
                     {
@@ -108,9 +112,9 @@ namespace FMCore.Engine.ContentManagers
             }
             if (Content.Count <= CONTENT_LENGTH)
             {
-                CuttedContent = Content.GetRange(startContentIndex, Content.Count);
+                CuttedContent = Content.GetRange(startContentIndex, Content.Count - startContentIndex);
             }
-
+            PrevWorkDir = WorkDir;
             page.Print(CuttedContent, CurrSelectedIndex);
         }
     }

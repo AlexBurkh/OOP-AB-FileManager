@@ -40,7 +40,7 @@ namespace FMRun
             currentCatalog = appConfig.LastDir;
 
             FileSystemDriver driver = new FileSystemDriver(logger);
-            PageManager pageManager = new PageManager(logger, driver, appConfig);
+            pageManager = new PageManager(logger, driver, appConfig);
 
             pageManager.PrintPage(currentCatalog, currentIndex);
             ProcessUserInput();
@@ -63,7 +63,7 @@ namespace FMRun
                                 currentIndex -= 1;
                             }
                         }
-                        continue;
+                        break;
                     case ConsoleKey.DownArrow:
                         {
                             if (currentIndex < pageManager.MaxIndex)
@@ -71,7 +71,7 @@ namespace FMRun
                                 currentIndex += 1;
                             }
                         }
-                        continue;
+                        break;
                     case ConsoleKey.LeftArrow:
                         {
                             DirectoryInfo parentDir = new DirectoryInfo(pageManager.WorkDir).Parent;
@@ -81,53 +81,53 @@ namespace FMRun
                                 currentIndex = 0;
                             }
                         }
-                        continue;
+                        break;
                     case ConsoleKey.RightArrow:
                         {
                             var item = pageManager.SelectedItem;
                             currentCatalog = item.FullName;
                             currentIndex = 0;
                         }
-                        continue;
+                        break;
                     case ConsoleKey.Enter:
                         {
                             var item = pageManager.SelectedItem;
                             Process.Start(new ProcessStartInfo() { FileName = item.FullName, UseShellExecute = true });
                         }
-                        continue;
+                        break;
                     // копировать
                     case ConsoleKey.F1:
                         {
 
                         }
-                        continue;
+                        break;
                     // вырезать
                     case ConsoleKey.F2:
                         {
 
                         }
-                        continue;
+                        break;
                     // вставить
                     case ConsoleKey.F3:
                         {
 
                             
                         }
-                        continue;
+                        break;
                     // удалить
                     case ConsoleKey.F4:
                         {
 
 
                         }
-                        continue;
+                        break;
                     // переименовать
                     case ConsoleKey.F5:
                         {
 
 
                         }
-                        continue;
+                        break;
                     // выйти
                     case ConsoleKey.Escape:
                     case ConsoleKey.F10:
@@ -139,7 +139,7 @@ namespace FMRun
                                 ChangeDrive((char)keyInfo.Key);
                             }
                         }
-                        continue;
+                        break;
                 }
                 pageManager.PrintPage(currentCatalog, currentIndex);
             }

@@ -36,11 +36,12 @@ namespace FMCore.Models.Pages
         #region Поля
         ConsoleDrawer drawer;
         Border[] _borders;
+        (uint x, uint y) startCoordinates = (2, 4);
         #endregion
 
 
         #region Свойства
-        Dictionary<long, FileSystemInfo> Content { get; set; }
+        List<FileSystemInfo> Content { get; set; }
         #endregion
 
 
@@ -52,7 +53,7 @@ namespace FMCore.Models.Pages
         public override void Print(T content, int coloredItemIndex)
         {
             PrintBorders();
-            //PrintContent(content);
+            PrintContent(content, coloredItemIndex);
         }
 
         private void PrintBorders()
@@ -63,20 +64,24 @@ namespace FMCore.Models.Pages
                 border.Draw();
             }
         }
-        private void PrintContent(T content)
+        private void PrintContent(T content, int coloredItemIndex)
         {
-            for (int i = 0; i < content.Count; i++)
+            Content = content as List<FileSystemInfo>;
+            for (uint i = 0; i < content.Count; i++)
             {
-                if (Content.TryGetValue(i, out var contentItem))
+                var contentItem = (content as List<FileSystemInfo>)[(int) i];
+                var background = ConsoleColor.Black;
+                if (i == coloredItemIndex)
                 {
-                    if (contentItem is DirectoryInfo)
-                    {
-                        drawer.DrawColoredAt(contentItem.FullName, (2, 2), (ConsoleColor.Black, ConsoleColor.DarkYellow));
-                    }
-                    if (contentItem is FileInfo)
-                    {
-                        drawer.DrawColoredAt(contentItem.Name, (2, 2), (ConsoleColor.Black, ConsoleColor.Gray));
-                    }
+                    background = ConsoleColor.Cyan;
+                }
+                if (contentItem is DirectoryInfo)
+                {
+                    drawer.DrawColoredAt(contentItem.FullName, (startCoordinates.x, startCoordinates.y + i), (background, ConsoleColor.DarkYellow));
+                }
+                if (contentItem is FileInfo)
+                {
+                    drawer.DrawColoredAt(contentItem.Name, (startCoordinates.x, startCoordinates.y + i), (background, ConsoleColor.Gray));
                 }
             }
         }

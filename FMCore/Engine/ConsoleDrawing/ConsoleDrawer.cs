@@ -5,6 +5,18 @@ namespace FMCore.Engine.ConsoleDrawing
 {
     public class ConsoleDrawer
     {
+        public ConsoleDrawer(int symbolsPerLine)
+        {
+            SymbolsPerLine = symbolsPerLine - 4;
+        }
+
+        #region Свойства
+        int SymbolsPerLine { get; set; }
+        #endregion
+
+
+
+
         /// <summary>
         /// Вывести в консоль текст, на опр фоне определенным цветом по координатам смещения
         /// </summary>
@@ -29,7 +41,14 @@ namespace FMCore.Engine.ConsoleDrawing
         public void DrawAt(string text, (uint x, uint y) coordinates)
         {
             Console.SetCursorPosition((int)coordinates.x, (int)coordinates.y);
-            Console.Write(text);
+            if (text.Length > SymbolsPerLine)
+            {
+                Console.Write(text.Substring(0, SymbolsPerLine));
+            }
+            else
+            {
+                Console.Write(text);
+            }
         }
     }
 }
