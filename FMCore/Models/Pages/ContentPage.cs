@@ -64,6 +64,7 @@ namespace FMCore.Models.Pages
                 border.Draw();
             }
         }
+
         private void PrintContent(T content, int coloredItemIndex)
         {
             Content = content as List<FileSystemInfo>;
@@ -74,15 +75,66 @@ namespace FMCore.Models.Pages
                 if (i == coloredItemIndex)
                 {
                     background = ConsoleColor.Cyan;
+                    PrintProperties(contentItem);
                 }
                 if (contentItem is DirectoryInfo)
                 {
-                    drawer.DrawColoredAt(contentItem.FullName, (startCoordinates.x, startCoordinates.y + i), (background, ConsoleColor.DarkYellow));
+                    drawer.DrawColoredAt(contentItem.Name, (startCoordinates.x, startCoordinates.y + i), (background, ConsoleColor.DarkYellow));
                 }
                 if (contentItem is FileInfo)
                 {
                     drawer.DrawColoredAt(contentItem.Name, (startCoordinates.x, startCoordinates.y + i), (background, ConsoleColor.Gray));
                 }
+            }
+        }
+
+        private void PrintProperties(FileSystemInfo fsi)
+        {
+            var coordinates = 3 + Height - 10;
+            List<string> properties = new List<string>();
+            properties.Add(fsi.Name);
+            properties.Add(fsi.CreationTime.ToString());
+            properties.Add(fsi.LastWriteTime.ToString());
+            properties.Add(fsi.LastAccessTime.ToString());
+
+            if (fsi is DirectoryInfo)
+            {
+                properties.Add(CountSize(fsi).ToString());
+            }
+            if (fsi is FileInfo)
+            {
+                properties.Add((fsi as FileInfo).Length.ToString());
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                drawer.DrawAt(properties[i], ((uint) 17, (uint) (coordinates + i)));
+            }
+        }
+
+        private long CountSize(FileSystemInfo item)
+        {
+            try
+            {
+                if (item is DirectoryInfo)
+                {
+                    string[] files = Directory.GetFiles(item.FullName, "*.*", SearchOption.AllDirectories);
+                    long sum = 0;
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        sum += files[i].Length;
+                    }
+                    return sum;
+                }
+                if (item is FileInfo)
+                {
+                    return (item as FileInfo).Length;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return 0;
             }
         }
         #endregion

@@ -24,7 +24,7 @@ namespace FMCore.Engine
         /// <summary>
         /// Буфер для хранения содержимого директории для последующей вставки
         /// </summary>
-        private Queue<FileSystemInfo> ContentBuffer { get; set; }
+        private Queue<FileSystemInfo> ContentBuffer { get; set; } = new Queue<FileSystemInfo>();
         #endregion
 
         #region Методы
@@ -68,8 +68,6 @@ namespace FMCore.Engine
             }
             return null;
         }
-
-
 
         /// <summary>
         /// Скопировать файл/директорию
@@ -170,7 +168,7 @@ namespace FMCore.Engine
         {
             try
             {
-                File.Copy(src, dst, true);
+                File.Copy(src, MakeNewFilePath(new FileInfo(src), new DirectoryInfo(dst)), true);
             }
             catch (Exception ex)
             {
@@ -248,11 +246,16 @@ namespace FMCore.Engine
         /// <param name="dst">Директория для вставки</param>
         private void PasteDir(string dst)
         {
-            var di = new DirectoryInfo(dst);
+            var dest = new DirectoryInfo(dst);
+            int rootLength = 0;
             for (int i = 0; i < ContentBuffer.Count; i++)
             {
                 var item = ContentBuffer.Dequeue();
-                var newFullName = MakeNewPath(item, di);
+                if (i == 0)
+                {
+                    rootLength = item.Name.Length;
+                }
+                var newFullName = MakeNewDirPath(item, dest, rootLength);
                 try
                 {
                     if (IsDirectory(item.FullName))
@@ -272,13 +275,17 @@ namespace FMCore.Engine
         /// <summary>
         /// Подготавливает новое имя для файла/директории
         /// </summary>
-        /// <param name="oldItem">Старый элемент с полным именем</param>
-        /// <param name="newItem">Путь к новой директории</param>
+        /// <param name="src">Старый элемент с полным именем</param>
+        /// <param name="dst">Путь к новой директории</param>
         /// <returns></returns>
-        private string MakeNewPath(FileSystemInfo oldItem, DirectoryInfo newItem)
+        private string MakeNewFilePath(FileSystemInfo src, FileSystemInfo dst)
         {
-            return $"{newItem.FullName}\\{oldItem.FullName.Substring(oldItem.Name.Length)}";
+            return $"{dst.FullName}\\{src.FullName.Substring(src.FullName.Length - src.Name.Length)}";
+        }
 
+        private string MakeNewDirPath(FileSystemInfo src, FileSystemInfo dst, int rootLength)
+        {
+            return $"{dst.FullName}\\{src.FullName.Substring(src.FullName.Length - rootLength)}";
         }
 
 

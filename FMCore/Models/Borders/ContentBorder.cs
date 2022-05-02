@@ -43,17 +43,3 @@ namespace FMCore.Models.Borders
         #endregion
     }
 }
-
-/*
-public CommonBorder(int height, int width)
-               : base(height, width) { }
-
-/// <summary>
-/// Формирование строки, содержащей общую границу окна
-/// </summary>
-/// <returns></returns>
-public override string Draw()
-{
-
-}
-*/

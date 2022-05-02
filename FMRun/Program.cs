@@ -16,6 +16,9 @@ namespace FMRun
         static ILogger logger;
         static Config appConfig;
         static PageManager pageManager;
+        static FileSystemDriver driver;
+        static FileSystemInfo itemToCopy;
+        static FileSystemInfo itemToMove;
 
 
         static string currentCatalog = string.Empty;
@@ -39,7 +42,7 @@ namespace FMRun
             
             currentCatalog = appConfig.LastDir;
 
-            FileSystemDriver driver = new FileSystemDriver(logger);
+            driver = new FileSystemDriver(logger);
             pageManager = new PageManager(logger, driver, appConfig);
 
             pageManager.PrintPage(currentCatalog, currentIndex);
@@ -98,34 +101,36 @@ namespace FMRun
                     // копировать
                     case ConsoleKey.F1:
                         {
-
+                           itemToCopy = pageManager.SelectedItem;
                         }
                         break;
                     // вырезать
                     case ConsoleKey.F2:
                         {
-
+                            itemToMove = pageManager.SelectedItem;
                         }
                         break;
                     // вставить
                     case ConsoleKey.F3:
                         {
-
-                            
+                            if (itemToCopy != null)
+                            {
+                                driver.Copy(itemToCopy.FullName, currentCatalog);
+                                itemToCopy = null;
+                            }
+                            if (itemToMove != null)
+                            {
+                                driver.Move(itemToMove.FullName, currentCatalog);
+                                itemToMove = null;
+                            }
                         }
                         break;
                     // удалить
                     case ConsoleKey.F4:
                         {
-
-
-                        }
-                        break;
-                    // переименовать
-                    case ConsoleKey.F5:
-                        {
-
-
+                            var item = pageManager.SelectedItem;
+                            driver.Delete(item.FullName);
+                            currentIndex = 0;
                         }
                         break;
                     // выйти
@@ -141,7 +146,16 @@ namespace FMRun
                         }
                         break;
                 }
-                pageManager.PrintPage(currentCatalog, currentIndex);
+                try
+                {
+                    pageManager.PrintPage(currentCatalog, currentIndex);
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(ex.Message);
+                    pageManager.PrintPage(appConfig.LastDir, 0);
+                }
+                
             }
         }
 

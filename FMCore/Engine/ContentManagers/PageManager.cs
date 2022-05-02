@@ -46,12 +46,15 @@ namespace FMCore.Engine.ContentManagers
         {
             Console.Clear();
             WorkDir = workDir;
-            if (WorkDir != PrevWorkDir || Content is null)
-            {
-                Content = driver.ListDirectory(WorkDir);
-                MaxIndex = Content.Count - 1;
-                CurrSelectedIndex = itemIndex;
-            }
+            /*            if (WorkDir != PrevWorkDir || Content is null)
+                        {
+                            Content = driver.ListDirectory(WorkDir);
+                            MaxIndex = Content.Count - 1;
+                            CurrSelectedIndex = itemIndex;
+                        }*/
+            Content = driver.ListDirectory(WorkDir);
+            MaxIndex = Content.Count - 1;
+            CurrSelectedIndex = itemIndex;
 
             if (CuttedContent is null || (CuttedContent[0] != Content[0]))
             {
