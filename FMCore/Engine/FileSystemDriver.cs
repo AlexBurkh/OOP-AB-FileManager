@@ -168,7 +168,7 @@ namespace FMCore.Engine
         {
             try
             {
-                File.Copy(src, MakeNewFilePath(new FileInfo(src), new DirectoryInfo(dst)), true);
+                File.Copy(src, dst);
             }
             catch (Exception ex)
             {
@@ -247,22 +247,26 @@ namespace FMCore.Engine
         private void PasteDir(string dst)
         {
             var dest = new DirectoryInfo(dst);
-            int rootLength = 0;
-            for (int i = 0; i < ContentBuffer.Count; i++)
+            int shift = 0;
+            var count = ContentBuffer.Count;
+            for (int i = 0; i < count; i++)
             {
                 var item = ContentBuffer.Dequeue();
                 if (i == 0)
                 {
-                    rootLength = item.Name.Length;
+                    shift = item.FullName.Length - item.Name.Length;
                 }
-                var newFullName = MakeNewDirPath(item, dest, rootLength);
+                var newFullName = MakeNewDirPath(item, dest, shift);
                 try
                 {
                     if (IsDirectory(item.FullName))
                     {
                         Directory.CreateDirectory(newFullName);
                     }
-                    MoveFile(item.FullName, newFullName);
+                    else
+                    {
+                        CopyFile(item.FullName, newFullName);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -285,7 +289,7 @@ namespace FMCore.Engine
 
         private string MakeNewDirPath(FileSystemInfo src, FileSystemInfo dst, int rootLength)
         {
-            return $"{dst.FullName}\\{src.FullName.Substring(src.FullName.Length - rootLength)}";
+            return $"{dst.FullName}\\{src.FullName.Substring(rootLength)}";
         }
 
 
